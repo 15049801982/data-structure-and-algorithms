@@ -1,0 +1,79 @@
+#include <iostream>
+#include <stdio.h>
+#include <malloc.h>
+#define SIZE 20
+#define INCREMENT 10
+using namespace std;
+
+typedef struct{
+  int *ele;
+  int length;
+  int listsize;
+}SqList;        
+
+void Initial(SqList &l)    /*引用参数 (&l) 和值传递的区别在于，引用参数存放了实参的地址，函数内部操作会直接改变实参。
+                              而值传递只是将实参的值复制过来，即使函数中对参数进行了操作，实参实际是不会改变的 */
+{
+  l.ele=(int *)malloc(SIZE*sizeof(int));
+  l.length=0;
+  l.listsize=SIZE;
+}
+
+void Insert(SqList &l,int pos,int e)
+{
+  if(pos<1||pos>l.length+1) printf("error");
+  if(l.length>=l.listsize)
+  {
+    int *newbace=(int *)realloc(l.ele,(l.listsize+INCREMENT)*sizeof(int));
+    l.ele=newbace;
+    l.listszie+=INCREMENT;
+  }
+  int *q=&(l.ele[pos-1]);
+  for(int *p=&(l.ele[l.length-1]);p>=q;--p)  *(p+1)=*p;
+  *q=e;
+  ++l.length;
+}
+
+void Delect(SqList &l,int pos,int &e)
+{
+  if(pos<1||pos>l.length) printf("error");
+  int *p=&(l.ele[pos-1]);
+  e=*p;
+  int *q=l.ele+l.length-1;
+  for(++p;p<q;p++) *(p-1)=*p;
+  --l.length;
+}
+
+void Display(SqList &l)
+{
+  if(l.length==0) printf("none\n");
+  else
+  {
+    printf("%d",l.ele[0]);
+    for(int i=1;i<l.length;i++) 
+      printf(" %d",l.ele[i]);
+    printf("\n");
+  }
+}
+
+int main()
+{
+  SqList list1;
+  Initial(list1);
+  Display(list1);
+  
+  for(int i=0;i<10;i++)
+    Insert(list1,i+1,i);
+  Display(list1);
+  
+  int pos,e;
+  scanf("%d %d",&pos,&e);
+  Insert(list1,pos,e);
+  Display(list1);
+  
+  scanf("%d %d",&pos,&e);
+  Delect(list1,pos,e);
+  Display(list1);
+  
+  return 0;
+}
