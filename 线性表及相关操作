@@ -40,7 +40,7 @@ void Delect(SqList &l,int pos,int &e)
   int *p=&(l.ele[pos-1]);
   e=*p;
   int *q=l.ele+l.length-1;
-  for(++p;p<q;p++) *(p-1)=*p;
+  for(++p;p<=q;p++) *(p-1)=*p;
   --l.length;
 }
 
