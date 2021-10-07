@@ -44,6 +44,15 @@ void Delect(SqList &l,int pos,int &e)
   --l.length;
 }
 
+int Locat(SqList l,int e)
+{
+    int i=1;
+    int *p=l.ele;
+    while(i<=l.length&&!(*p++==e)) i++;
+    if(i<=l.length) return i;
+    else return 0;
+}
+
 void Display(SqList &l)
 {
   if(l.length==0) printf("none\n");
@@ -74,6 +83,9 @@ int main()
   scanf("%d %d",&pos,&e);
   Delect(list1,pos,e);
   Display(list1);
+  
+  scanf("%d",&e);
+  printf("%d\n",Locat(list1,e));
   
   return 0;
 }
