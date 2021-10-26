@@ -1,0 +1,154 @@
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+using namespace std;
+typedef struct LNode{
+    int data;
+    struct LNode *next;
+}LNode,*LinkList;  //LinkList作为整个单链表的头结点，它是一个结构体类型的指针变量，只能指向该类型的自定义结构体，即指向链表的第一个结点
+
+int GetElem_L(LinkList L,int i) //搜索某单链表的某节点数据域的值，并返回
+{
+    int e;
+    int c=1;
+    LinkList p=L->next;
+    while(p&&c<i)
+    {
+        p=p->next;
+        c++;
+    }
+    if(!p||c>i)
+        printf("error!");
+    e=p->data;
+    return e;  //返回被搜索节点数据域的值。
+}
+
+int ListInsert(LinkList L,int i,int e)
+{
+    LNode *p=L;
+    int c=0;
+    while(p&&c<i-1)
+    {
+        p=p->next;
+        c++;
+    }
+    if(!p||c>i-1)
+        printf("'error!");
+    LinkList s=(LinkList)malloc(sizeof(LNode));
+    s->data=e;
+    s->next=p->next; //有必要先将新节点的指针域赋值为p->next，若先执行p->next=s,会发现链表断裂，没办法将新节点的指针域和截断后的结点相连接。
+    p->next=s;
+    return 0;
+}
+int ListDelete(LinkList &L,int i)
+{
+    int e;
+    LinkList p=L;
+    int c=0;
+    while(p->next&&c<i-1)
+    {
+        p=p->next;
+        ++c;
+    }                     //寻找第i-1个节点
+    if(!(p->next)||c>i-1)
+        printf("error!");
+    LinkList q=p->next;  //指向要删除结点的结构体指针
+    p->next=q->next;     //被删除节点的前一个结点的指针域指向被删除节点的下一个结点。
+    e=q->data;
+    free(q);
+    return e;
+}
+void CreateList_L(LinkList &L,int n)  //从表头向链表中插入元素。
+{
+    //逆位序输入n个元素的值，建立带表头结点的单链表。
+    L = (LinkList)malloc(sizeof(LNode));
+    L->next=NULL;
+    printf("逆序依次输入节点值：\n");
+    for(int i=n;i>0;--i)
+    {
+        LinkList p=(LinkList)malloc(sizeof(LNode));
+        scanf("%d",&p->data);
+        p->next=L->next;
+        L->next=p;
+    }
+}
+void MergeList_L(LinkList &La,LinkList &Lb,LinkList &Lc)
+{
+    //要求两个单链表非递减排序，归并后的单链表也按非递减排序
+    LinkList pa=La->next;
+    LinkList pb=Lb->next;
+    LinkList pc;
+    Lc=pc=La;   //以la的头结点作为lc的头结点
+    while(pa&&pb)
+    {
+        if(pa->data<=pb->data)
+        {
+            pc->next=pa;
+            pc=pa;
+            pa=pa->next;
+        }
+        else{
+            pc->next=pb;
+            pc=pb;
+            pb=pb->next;
+        }
+    }
+    pc->next=pa?pa:pb;
+    free(Lb);
+}
+void Display(LinkList &L)
+{
+    if(!(L->next))
+        printf("该链表为空！\n");
+    else{
+        printf("链表内容：\n");
+        LinkList p=L->next;
+        printf("%d",p->data);
+        p=p->next;
+        while(p)
+        {
+            printf(" %d",p->data);
+            p=p->next;
+        }
+        printf("\n");
+    }
+}
+int main()
+{
+    int n;
+    LinkList La;
+    La->next=NULL;
+    cout<<"初始链表头指针La已创建。"<<endl;
+    Display(La);
+    cout << "请输入链表长度：" << endl;
+    cin >> n;
+    CreateList_L(La,n);
+    Display(La);
+    int i=0;
+    int e=0;
+    printf("输入插入位置、插入值:\n");
+    scanf("%d %d",&i,&e);
+    ListInsert(La,i,e);
+    Display(La);
+    printf("输入删除位置:\n");
+    scanf("%d",&i);
+    e=ListDelete(La,i);
+    printf("位置为%d、值为%d的结点已被删除。\n",i,e);
+    Display(La);
+    LinkList Lb;
+    Lb->next=NULL;
+    cout << "请输入链表长度：" << endl;
+    cin >> n;
+    CreateList_L(Lb,n);
+    Display(Lb);
+    LinkList Lc;
+    printf("合并链表La和Lb(要求两链表都为非递减排序)\n");
+    MergeList_L(La,Lb,Lc);
+    Display(Lc);
+    printf("寻找某结点位置处的值：\n");
+    printf("输入位置：\n");
+    scanf("%d",&i);
+    e=GetElem_L(Lc,i);
+    printf("该位置上的值为%d\n",e);
+    return 0;
+}
